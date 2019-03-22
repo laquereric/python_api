@@ -41,11 +41,12 @@ class ReadEverything:
         names = klass.list(self.connection)
         for name in names:
             if max_read > 0:
-                if name.find("|") > 0:
-                    parts = name.split("|")
-                    rsrc = klass.lookup(self.connection, parts[0], parts[1])
-                else:
-                    rsrc = klass.lookup(self.connection, name)
+                #if name.find("|") > 0:
+                #    parts = name.split("|")
+                #    rsrc = klass.lookup(self.connection, parts[0], parts[1])
+                #else:
+                #
+                rsrc = klass.lookup(self.connection, name)
                 max_read = max_read - 1
         print("{}: {}".format(kind, len(names)))
 
@@ -101,27 +102,28 @@ class ReadEverything:
 
 logging.basicConfig(level=logging.INFO)
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--host", action='store', default="localhost",
-                    help="Management API host")
-parser.add_argument("--username", action='store', default="admin",
-                    help="User name")
-parser.add_argument("--password", action='store', default="admin",
-                    help="Password")
-parser.add_argument('--debug', action='store_true',
-                    help='Enable debug logging')
-args = parser.parse_args()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--host", action='store', default="localhost",
+                        help="Management API host")
+    parser.add_argument("--username", action='store', default="admin",
+                        help="User name")
+    parser.add_argument("--password", action='store', default="admin",
+                        help="Password")
+    parser.add_argument('--debug', action='store_true',
+                        help='Enable debug logging')
+    args = parser.parse_args()
 
-if args.debug:
-    logging.basicConfig(level=logging.WARNING)
-    logging.getLogger("requests").setLevel(logging.WARNING)
-    logging.getLogger("marklogic").setLevel(logging.DEBUG)
+    if args.debug:
+        logging.basicConfig(level=logging.WARNING)
+        logging.getLogger("requests").setLevel(logging.WARNING)
+        logging.getLogger("marklogic").setLevel(logging.DEBUG)
 
-conn = Connection(args.host, HTTPDigestAuth(args.username, args.password))
-read_everything = ReadEverything(conn)
+    conn = Connection(args.host, HTTPDigestAuth(args.username, args.password))
+    read_everything = ReadEverything(conn)
 
-print("Reading all resources from {}".format(args.host))
+    print("Reading all resources from {}".format(args.host))
 
-read_everything.read()
+    read_everything.read()
 
-print("Finished")
+    print("Finished")
